@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class=row style="margin-top: 5em;">
+    <!-- Left column -->
+    <div class='col-md-6'>
+        <!-- first panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Add films to Library</h3>
+            </div>
+            <div class='panel-body'>
+                <form action='search' method="get">
+                    <input class="form-control" type="search" name="url" placeholder="IMDb URL of film to be added" autofocus="", autocomplete="on">
+                    <br>
+                    <button class="btn btn-default pull-right" type="submit">Search</button>
+                    <input type="hidden" name="type" value='search'>
+                </form>
+            </div>
+        </div>
+
+        <!-- Second panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Listings</h3>
+            </div>
+            <div class='panel-body'>
+                <div class="list-group">
+
+                    <a class="list-group-item clearfix" href="{% url 'films:listview' 0%}"> All films <small>({{all_films.count}} films)</small></a>
+
+                    <a class="list-group-item clearfix" href="{% url 'films:listview' 1%}"> Watchlist films <small>({{watchList.count}} films)</small></a>
+
+                    <a class="list-group-item clearfix" href="{% url 'films:listview' 2%}"> Seen films <small>({{seenFilms.count}} films)</small></a>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Statistics</h3>
+            </div>
+            <div class='panel-body'>
+                In total, I have seen {{nrSeen}} films, of which {{seenThisYear}} were this year. <br>
+                In total, this accounts for {{hoursSeen}} hours of film, of which {{hoursSeenYear}} hours this year.
+            </div>
+        </div>
+
+
+
+
+
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Film genres</h3>
+            </div>
+            <div class='panel-body'>
+                <div class="list-group">
+                   {% for g in genres %}
+                   <a class="list-group-item clearfix" href="{% url 'films:genre' g.id%}"> {{g}} <small>({{g.film_set.all.count}} films)</small></a>
+
+                   {% endfor %}
+               </div>
+           </div>
+       </div>
+
+
+   </div>
+
+   <!-- Right column -->
+   <div class='col-md-6'>
+    <!-- First panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Search Library</h3>
+        </div>
+        <div class='panel-body'>
+            <form action='searchDB' method="get">
+                <input class="form-control" type="searchDB" name="title" placeholder="Film title" autofocus="", autocomplete="off">
+                <br>
+                <button class="btn btn-default pull-right" type="submit">Search</button>
+                <input type="hidden" name="type" value='search'>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- Second panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Film Feed</h3>
+        </div>
+        <div class='panel-body'>
+            Showing 10 most recent listings, out of {{all_films.count}} films in total <a href="{% url 'films:listview' 0%}"> (See more)</a>
+            <br><br>
+            <div class="list-group">
+                <!-- Loop over all films and list them -->
+                {% for f in tenFilms %}
+                <a class='list-group-item clearfix' href={{f.id}}>
+                    <div class='pull-right'><img class='img-rounded img-responsive' style='margin-left: 12px' src={{f.imageURL}} width="60px">
+                    </div>
+                    {% if f.favorite %}
+                    <span class="fa fa-star checked"></span>
+                    {% endif %}
+                    {{ f.title }} - <small>{%if f.isSerie %} Series
+                        {% else %}
+                        Film
+                        {% endif%}
+                    </small>
+                    <br>
+                    <small>
+                        Starring: {% for actor in f.starring.all %}
+                        {{actor}},
+                        {% endfor %}
+                        <br>
+                        {% if f.isSerie%}
+                        Number of episodes: {{f.nrEpisodes}}
+                        {% else %}
+                        Length: {{f.duration}}
+                        {% endif %} | Released {{f.releaseDate|date:"M Y"}}
+                        <br>
+                        Genres: {% for genre in f.genre.all %}
+                        {{genre}},
+                        {% endfor %}
+                        <br>
+                        {{f.modified|date:"d M Y"}}: {{f.get_status_display}}
+                        {% if f.status == "SEEN"%}
+                        {% for i in '01235'|make_list %}
+                        {% if forloop.counter > f.ownRating %}
+                        <span class="fa fa-star"></span>
+                        {% else %}
+                        <span class="fa fa-star checked"></span>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </small>
+                </a>
+                {% endfor %}
+            </div>
+            Showing 10 out of {{all_films.count}}.<a href="{% url 'films:listview' 0%}"> See all listings</a>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+{% endblock %}
+
+

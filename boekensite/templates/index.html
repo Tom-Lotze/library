@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+
+<div class=row style="margin-top: 5em;">
+
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Tom's Library</h3>
+            </div>
+            <div class='panel-body'>
+                    <h4>Introduction</h4>
+                <p>Welcome to my multimedia library. For now, the library is separated into books and films. You can add either books or films or series using URLs of either <a href="http://www.bol.com">Bol.com</a> or <a href="http://www.imdb.com">IMDb</a> to automatically add the item to your library. This is done through scraping of the webpages using a BeautifulSoup4 based Python scraper. The instances are saved in a sqlite database, running in a Django framework.</p>
+
+                <h4>Functionality</h4>
+                <p>
+                    The functionality throughout the books and films library is practically the same. All instances have a status (e.g. Seen or On Watchlist for films) that can be changed on the detail pages of the instance. On the home page of each library various selections of the items can be seen, as well as a feed with the latest modifications in the database. Furthermore, one can add items here, or search in the respective library. Lastly, a short overview of statistics is shown on each home page, indicating how many pages have been read, or how many minutes of film has been watched.
+                </p>
+                <p>
+                    Per item (book/film/series), one can see information about the item on the detail page, such as starring actors, author, length (time/ number of pages), release date, language, and the cover image. Furthermore, a description and metascores can be found here. At this point, you can change the status of the item (e.g. Currently Reading/Read etc.), place a personal review and a rating (0-5 stars), and optionally favorite the item. If necessary, the item can be removed from the library.
+                </p>
+                <h4>Credits</h4>
+                <p>The website was fully build by Tom Lotze, being inspired by Hans de Zwart his <a href="https://books.hansdezwart.nl/">Book page</a>, as well as using his stylesheet. However, no code was copied and the backend is completely my own work. For more information about me, visit my <a href="https://tom-lotze.github.io/">personal website</a></p>
+
+
+        </div>
+        </div>
+
+    </div>
+    <!-- Left column -->
+    <div class='col-md-6'>
+
+        <!-- first panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Book Library</h3>
+            </div>
+            <div class='panel-body'>
+               <a href="books/">
+                <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 30px; height: 80px' src="{% static '/reading.png'%}">
+                </div>
+                <h3>Go to Books section</h3>
+                </a>
+                </div>
+            <br>
+            </div>
+        </div>
+
+
+
+<!-- Right column -->
+<div class='col-md-6'>
+
+    <!-- first panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Film Overview</h3>
+        </div>
+        <div class='panel-body'>
+           <a href="films/">
+            <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 30px; height: 80px' src="{% static '/filmcamera.png'%}"></div>
+            <h3>Go to Films section</h3>
+        </a>
+    </div>
+    <br>
+</div>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class='page-header' style='margin-top: 5em;'>
+    <h2> {% if b.favorite %}
+        <span class="fa fa-star checked"></span>
+        {% endif %}
+        {{b.title}}
+        <br>
+        <small>{{b.authors}}</small>
+    </h2>
+</div>
+
+<!-- Re initialize the row for aligning -->
+<div class='row'>
+
+    <div class=col-md-8>
+        <!-- Book information panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Book information</h3>
+            </div>
+            <div class='panel-body'>
+                <ul>
+                    <li>
+                        Language: {{ b.get_language_display }}
+                    </li>
+                    <li>
+                        Published: {{b.publication_date|date:"M Y"}}
+                    </li>
+                    <li>
+                     Added to library on {{b.created|date:"D d M Y"}}
+                 </li>
+                 <li>
+                    ISBN: {{b.isbn}}
+                </li>
+                <li>
+                    Number of pages: {{b.nrPages}}
+                </li>
+                <li>
+                    <a href={{b.link}} target=blank_>View on bol.com</a>
+                </li>
+            </ul>
+            <!-- Show rating with stars -->
+            <div class='text-center'>
+                {% for i in '01235'|make_list %}
+                {% if forloop.counter > b.rating %}
+                <span class="fa fa-star"></span>
+                {% else %}
+                <span class="fa fa-star checked"></span>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+
+            <br>
+            <a href="{% url 'books:index' %}" class="btn btn-default pull-right">Back to Library</a>
+        </div>
+    </div>
+
+    <!-- Status panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Status</h3>
+        </div>
+        <div class='panel-body'>
+            <div class="row">
+                <div class="col-md-6">
+                    Current status: {{b.get_status_display}}
+                    {% if favorite %}
+                    and favorited
+                    (<small><a href="{% url 'books:favorite' b.id%}">Unfavorite</a></small>)
+
+                    {% else %}
+                    (<small><a href="{% url 'books:favorite' b.id%}">Make favorite</a></small>)
+
+                    {% endif %}
+                    <br>
+                    Move to other list:<br>
+
+                    <form action="{% url 'books:changeList' b.id %}" method="post">
+                        {% csrf_token %}
+
+                        <input type="radio" {% if currList == "WISH"%} checked="checked" {%endif%} name="list" id="list" value="WISH">
+                        <label for="">Wishlist</label><br>
+
+                        <input type="radio" {% if currList == "TODO" %} checked="checked" {% endif %} name="list" id="list" value="TODO">
+                        <label for="choice">To read</label><br>
+
+                        <input type="radio" {% if currList == "CURR"%} checked="checked" {%endif%} name="list" id="list" value="CURR">
+                        <label for="">Currently reading</label><br>
+
+                        <input type="radio" {% if currList == "READ"%} checked="checked" {%endif%} name="list" id="list" value="READ">
+                        <label for="">Read</label><br>
+
+                        <input type="submit" value="Move to other list">
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    Change the rating of this book (0-5 stars):
+                    <br>
+                    <form action="{% url 'books:changeRating' b.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="number" name="rating" value={{b.rating}} class="vIntegerField" required="" id="id_rating">
+                        <input type="submit" value="Submit new rating">
+                    </form>
+                    <br>
+
+                    If you want to, you can remove this book from your library:<br>
+                    <form action="{% url 'books:delete' b.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-default" type="submit" color="red" onclick="return confirm('Are you sure to remove this book from your library? \nThis action cannot be undone');">
+                            Remove this book from your library
+                        </button>
+                        <input type="hidden" name="type" value='delete'>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class=col-md-4>
+    <div><img class='img-rounded img-responsive' style='margin-left: 12px' src={{b.image_url}} width="75%"></div>
+</div>
+</div>
+
+
+<!-- Second row for description -->
+<div class='row'>
+    <div class = 'col-md-12'>
+        {% if b.status == "READ"%}
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Review</h3>
+            </div>
+            <div class='panel-body'>
+
+                <form action="{% url 'books:review' b.id %}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="review" rows="3" style='width:100%'>{%if b.review%}{{b.review}} {%else%} Write your review of {{b.title}} {%endif%}</textarea>
+                    <br>
+                    <input type="submit" value="Submit review">
+                </form>
+
+            </div>
+        </div>
+        {%endif%}
+
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Description</h3>
+            </div>
+            <div class='panel-body'>
+                {{b.description}}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
+

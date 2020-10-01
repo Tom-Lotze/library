@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- End the row from base template to add title -->
+
+<div class='page-header' style='margin-top: 5em;'>
+    <h2> {% if f.favorite %}
+        <span class="fa fa-star checked"></span>
+        {% endif %}
+        {{f.title}}
+        <br>
+        <small>{{f.director}}</small>
+    </h2>
+</div>
+
+<!-- Re initialize the row for aligning -->
+<div class='row'>
+
+    <div class=col-md-8>
+        <!-- Book information panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>  {% if f.isSerie%} Series
+                    {% else %}
+                    Film
+                {% endif %} details</h3>
+            </div>
+            <div class='panel-body'>
+                <ul>
+                    <li>
+                        Starring:
+                        {% for actor in f.starring.all %}
+                        <a href="{% url 'films:actor' actor.id%}">{{actor}}</a>,
+                        {% endfor %}
+                    </li>
+                    <li>
+                        Release date: {{f.releaseDate|date:"M Y"}}
+                    </li>
+                    <li>
+                        Genres: {% for g in f.genre.all %}
+                        {{g}},
+                        {% endfor %}
+                    </li>
+                    <li>
+                     Added to library on {{f.created|date:"D d M Y"}}
+                 </li>
+                 <li>
+                    {% if f.isSerie%}
+                    Number of episodes: {{f.nrEpisodes}}
+                    {% else %}
+                    Length: {{f.duration}}
+                    {% endif %}
+                </li>
+                <li>
+                    Rating on IMDb: {{f.rating}} {%if f.metascore%}(Metascore: {{f.metascore}}){%endif%}
+                </li>
+                <li>
+                    <a href={{f.link}} target=blank_>View on IMDb</a>
+                </li>
+            </ul>
+            <!-- Show rating with stars -->
+            <div class='text-center'>
+                {% for i in '01235'|make_list %}
+                {% if forloop.counter > f.ownRating %}
+                <span class="fa fa-star"></span>
+                {% else %}
+                <span class="fa fa-star checked"></span>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+
+            <br>
+            <a href="{% url 'films:index' %}" class="btn btn-default pull-right">Back to Library</a>
+        </div>
+    </div>
+
+    <!-- Status panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Status</h3>
+        </div>
+        <div class='panel-body'>
+            <div class="row">
+                <div class="col-md-6">
+                    Current status: {{f.get_status_display}}
+                    {% if favorite %}
+                    and favorited
+                    (<small><a href="{% url 'films:favorite' f.id%}">Unfavorite</a></small>)
+
+                    {% else %}
+                    (<small><a href="{% url 'films:favorite' f.id%}">Make favorite</a></small>)
+
+                    {% endif %}
+                    <br>
+                    Move to other list:<br>
+
+
+                    <form action="{% url 'films:changeStatus' f.id %}" method="post">
+                        {% csrf_token %}
+
+                        <input type="radio" {% if currList == "TODO" %} checked="checked" {% endif %} name="list" id="list" value="TODO">
+                        <label for="choice">On watchlist</label><br>
+
+                        <input type="radio" {% if currList == "SEEN"%} checked="checked" {%endif%} name="list" id="list" value="SEEN">
+                        <label for="">Seen</label><br>
+
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    Change the rating of this {% if f.isSerie%} series
+                    {% else %} film {% endif %} (0-5 stars):
+                    <br>
+                    <form action="{% url 'films:changeRating' f.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="number" name="rating" value={{f.ownRating}} class="vIntegerField" required="" id="id_rating">
+                        <br>
+                        <input type="submit" value="Submit new rating">
+                    </form>
+                    <br>
+
+                    If you want to, you can remove this {% if f.isSerie%} series{% else %} film {% endif %} from your library:<br>
+                    <form action="{% url 'films:delete' f.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-default" type="submit" color="red" onclick="return confirm('Are you sure to remove this film from your library? \nThis action cannot be undone');">Remove from your library</button>
+                        <input type="hidden" name="type" value='delete'>
+                        <!-- <input type="submit" value="Remove this book from library"> -->
+                    </form>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class=col-md-4>
+    <div><img class='img-rounded img-responsive' style='margin-left: 12px' src={{f.imageURL}} width="75%"></div>
+</div>
+</div>
+
+
+<!-- Second row for description -->
+<div class='row'>
+
+
+ <div class = 'col-md-12'>
+{% if f.status == "SEEN"%}
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Review</h3>
+        </div>
+        <div class='panel-body'>
+
+            <form action="{% url 'films:review' f.id %}" method="POST">
+                {% csrf_token %}
+                <textarea name="review" rows="3" style='width:100%'>{%if f.review%}{{f.review}} {%else%} Write your review of {{f.title}} {%endif%}</textarea>
+                <br>
+                <input type="submit" value="Submit review">
+            </form>
+
+        </div>
+    </div>
+    {%endif%}
+
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Description</h3>
+            </div>
+            <div class='panel-body'>
+                {{f.description}}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
+

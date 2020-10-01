@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class=row style="margin-top: 5em;">
+<div class=col-md-12>
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Results</h3>
+        </div>
+        <div class='panel-body'>
+            {% if failure %}
+                We could not retrieve a book using this URL "<strong>{{bolurl}}</strong>", Was it valid?
+            {% elif duplicate %}
+                This title is already in your library!
+            {% else %}
+                {{ title }} from {{ authors }} is added to your library with id {{id}}
+
+            {% endif %}
+
+            <br>
+            {% if not failure %}
+            <a href="{{id}}" class="btn btn-default pull-right">Go to book page</a>
+            {% endif %}
+
+            <a href="{% url 'books:index' %}" class="btn btn-default pull-right">Home</a>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
+

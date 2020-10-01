@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class=row style="margin-top: 5em;">
+    <!-- Left column -->
+    <div class='col-md-6'>
+        <!-- first panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Add Books to Library</h3>
+            </div>
+            <div class='panel-body'>
+                <form action='search' method="get">
+                    <input class="form-control" type="search" name="url" placeholder="Bol.com URL of book to be added" autofocus="", autocomplete="on">
+                    <br>
+                    <button class="btn btn-default pull-right" type="submit">Search</button>
+                    <input type="hidden" name="type" value='search'>
+                </form>
+            </div>
+        </div>
+
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Statistics</h3>
+            </div>
+            <div class='panel-body'>
+                In total, I have read {{nrReadBooks}} books, of which {{nrReadThisYear}} were this year. <br>
+                In total, this accounts for {{pagesRead}} pages, of which I read {{pagesReadThisYear}} pages this year.
+            </div>
+        </div>
+
+
+
+        <!-- Second panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Book lists</h3>
+            </div>
+            <div class='panel-body'>
+                <div class="list-group">
+                    <a class="list-group-item" href="{% url 'books:listview' 1%}">On wishlist <small>({{nrWishBooks}} books)</small></a>
+                    <a class="list-group-item" href="{% url 'books:listview' 2%}">To read <small>({{nrTodoBooks}} books)</small></a>
+                    <a class="list-group-item" href="{% url 'books:listview' 3%}">Currently reading <small>({{nrCurrBooks}} books)</small></a>
+                    <a class="list-group-item" href="{% url 'books:listview' 4%}">Read <small>({{nrReadBooks}} books)</small></a>
+                    <br>
+                    <a class="list-group-item" href="{% url 'books:listview' 5%}">Favorites <small>({{nrFavorites}} books)</small></a>
+                    <a class="list-group-item" href="{% url 'books:listview' 6%}">All books <small>({{all_books.count}} books)</small></a>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Currently reading panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Currently reading</h3>
+            </div>
+            <div class='panel-body'>
+                {% for b in currBooks %}
+                <a class='list-group-item clearfix' href={{b.id}}>
+                    <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px">
+                    </div>
+                    {% if b.favorite %}
+                    <span class="fa fa-star checked"></span>
+                    {% endif %}
+                    {{ b.title }} - {{b.authors}}
+                    <br>
+                    <small>{{ b.get_language_display }} | {{b.nrPages}} pages | published {{b.publication_date|date:"M Y"}}.
+                        <br>
+                        Added to library on {{b.created|date:"D d M Y"}}
+                        <br>
+                        Started reading on {{b.modified|date:"d M Y"}}
+                    </small>
+                </a>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column -->
+    <div class='col-md-6'>
+        <!-- First panel -->
+         <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Search Library</h3>
+        </div>
+        <div class='panel-body'>
+            <form action='searchDB' method="get">
+                <input class="form-control" type="searchDB" name="query" placeholder="Book title or author" autofocus="", autocomplete="off">
+                <br>
+                <button class="btn btn-default pull-right" type="submit">Search</button>
+                <input type="hidden" name="type" value='searchDB'>
+            </form>
+        </div>
+    </div>
+        <!-- Second panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Book Feed</h3>
+            </div>
+            <div class='panel-body'>
+                Showing 10 most recent listings, out of {{all_books.count}} books in total <a href="{% url 'books:listview' 6%}"> (See more)</a>
+                <br><br>
+                <div class="list-group">
+                    <!-- Loop over all books and list them -->
+                    {% for b in tenBooks %}
+                    <a class='list-group-item clearfix' href={{b.id}}>
+                        <div class='pull-right'><img class='img-rounded img-responsive' style='margin-left: 12px' src={{b.image_url}} width="50px">
+                        </div>
+                        {% if b.favorite %}
+                        <span class="fa fa-star checked"></span>
+                        {% endif %}
+                        {{ b.title }} - {{b.authors}}
+                        <br>
+                        <small>{{ b.get_language_display }} | {{b.nrPages}} pages | published {{b.publication_date|date:"M Y"}}.
+                            <br>
+                            Added to library on {{b.created|date:"d M Y"}}
+                            <br>
+                            {{b.modified|date:"d M Y"}}: {{b.get_status_display}}
+                            {% if b.status == "READ"%}
+                                {% for i in '01235'|make_list %}
+                                {% if forloop.counter > b.rating %}
+                                <span class="fa fa-star"></span>
+                                {% else %}
+                                <span class="fa fa-star checked"></span>
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </small>
+                    </a>
+                    {% endfor %}
+                </div>
+                Showing 10 out of {{all_books.count}}.<a href="{% url 'books:listview' 6%}"> See all listings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+

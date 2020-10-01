@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="page-header" style='margin-top: 5em;'>
+    <h2>{{name}}</h2>
+</div>
+
+
+<div class='row'>
+    {%if books%}
+    <div class="list-group clearfix">
+
+        {% for b in books %}
+        <a class='list-group-item clearfix' href="/books/{{b.id}}">
+            <h4>
+                <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px">
+                </div>
+                {% if b.favorite %}
+                <span class="fa fa-star checked"></span>
+                {% endif %}
+                {{ b.title }} - {{b.authors}}
+            </h4>
+            {{ b.get_language_display }} | {{b.nrPages}} pages | published {{b.publication_date|date:"M Y"}}.
+            <br>
+            Added on {{b.created|date:"D d M Y"}} | {% if b.status != "WISH"%}{{b.modified|date:"d M Y"}} : {% endif %} {{b.get_status_display}}
+            {% if b.status == "READ"%}
+            {% for i in '01235'|make_list %}
+            {% if forloop.counter > b.rating %}
+            <span class="fa fa-star"></span>
+            {% else %}
+            <span class="fa fa-star checked"></span>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+
+
+    {% else %}
+        <div class='panel-body'>
+            <h4>No records could be retrieved</h4>
+        </div>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'books:index' %}" class="btn btn-default pull-right">
+            Home
+        </a>
+
+</div>
+
+
+
+
+
+
+{% endblock %}
+

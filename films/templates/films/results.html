@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="page-header" style='margin-top: 5em;'>
+    <h2>Results for <i>{{query}}</i></h2>
+</div>
+
+
+<div class='row'>
+    {%if results%}
+    <div class="list-group clearfix">
+
+        {% for f in results %}
+        <a class='list-group-item clearfix' href="/films/{{f.id}}">
+            <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{f.imageURL}} width="70px">
+            </div>
+            {% if f.favorite %}
+            <span class="fa fa-star checked"></span>
+            {% endif %}
+            {{ f.title }} - <small>{%if f.isSerie %} Series
+                {% else %}
+                Film
+                {% endif%}
+            </small>
+            <br>
+            <small>
+                Starring: {% for actor in f.starring.all %}
+                {{actor}},
+                {% endfor %}
+                <br>
+                {% if f.isSerie%}
+                Number of episodes: {{f.nrEpisodes}}
+                {% else %}
+                Length: {{f.duration}}
+                {% endif %} | Released {{f.releaseDate|date:"M Y"}}
+                <br>
+                Genres: {% for genre in f.genre.all %}
+                {{genre}},
+                {% endfor %}
+                <br>
+            {{f.modified|date:"d M Y"}}: {{f.get_status_display}}</small>
+        </a>
+        {%endfor%}
+    </div>
+
+
+    {% else %}
+    <div class='panel-body'>
+        <h4>No records could be found that matched <i>"{{query}}"</i></h4>
+    </div>
+    {% endif %}
+
+</div>
+
+
+
+
+
+
+{% endblock %}
+

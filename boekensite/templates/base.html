@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Tom Lotze">
+    <meta name="description" content="Toms Personal Library">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tom's Library</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+    <!-- link icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+
+
+<body role="document">
+
+    <!-- Navbar -->
+    <div class="container theme-showcase" role="main">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class='navbar-header'>
+                    <a class='navbar-brand' href="{% url 'index' %}">
+                        Home
+                    </a>
+                    <a class='navbar-brand' href="{% url 'books:index' %}">
+                        My books
+                    </a>
+                    <a class='navbar-brand' href="{% url 'films:index' %}">
+                        My films
+                    </a>
+
+                </div>
+            </div>
+        </nav>
+  <!--Create a row with two columns in it-->
+    {% block content %}
+    {% endblock %}
+
+<br>
+<br>
+
+<!-- footer -->
+<div class='panel-footer navbar-fixed-bottom pull-right style'>Created by Tom Lotze, inspired by <a href="https://books.hansdezwart.nl">Hans de Zwart</a>.</div>
+
+
+</div>
+</body>
+</html>

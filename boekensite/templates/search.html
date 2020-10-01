@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class=col-md-12>
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Results</h3>
+        </div>
+        <div class='panel-body'>
+            {{ title }} from {{ author }} is added to your library
+            <br>
+            <a href="{% url 'index' %}" class="btn btn-default pull-right">Home</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
