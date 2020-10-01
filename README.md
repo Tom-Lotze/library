@@ -5,4 +5,4 @@ Similarly, and IMDB link for films and series suffices for adding those.
 
 The records can be put on on different lists (to read, read), and can be rated, favorited and given a review. Some statistics about the books will be shown (number of books / pages read in total and this year, minutes of film watched etc). A screenshot of the books section of the website is provided below.
 
-https://github.com/Tom-Lotze/library/blob/master/Book_page.png
+[https://github.com/Tom-Lotze/library/blob/master/Book_page.png]
