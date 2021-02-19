@@ -22,6 +22,4 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('books/', include('books.urls')),
     path('films/', include('films.urls')),
-
-
 ]

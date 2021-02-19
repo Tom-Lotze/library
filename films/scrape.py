@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: TomLotze
 # @Date:   2020-08-15 11:08
-# @Last Modified by:   TomLotze
-# @Last Modified time: 2020-08-23 15:46
+# @Last Modified by:   Tom Lotze
+# @Last Modified time: 2021-01-31 13:47
 
 
 from bs4 import BeautifulSoup as BS
@@ -80,7 +80,10 @@ def scrape_imdb(url):
     if raw['@type'] == "TVSeries":
         info['isSerie'] = True
         info["nrEpisodes"] = int(html.find("span", class_="bp_sub_heading").string.split()[0])
-        info['director'] = raw['creator'][0]['name']
+        try:
+            info['director'] = raw['creator'][0]['name']
+        except:
+            info['director'] = "unknown"
     else:
         d = raw['duration']
         h, m = map(int, d[2:-1].split("H"))
@@ -93,9 +96,12 @@ def scrape_imdb(url):
             info['director'] = raw['director']['name']
 
 
-        metascore_class = html.select('div[class*="metacriticScore"]')[0]
+        try:
+            metascore_class = html.select('div[class*="metacriticScore"]')[0]
 
-        info['metascore'] = [int(i) for i in metascore_class.stripped_strings][0]
+            info['metascore'] = [int(i) for i in metascore_class.stripped_strings][0]
+        except:
+            info['metascore'] = 0
 
 
 

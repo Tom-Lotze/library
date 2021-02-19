@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+
+
+<div class=row style="margin-top: 5em;">
+
+    <h2>404: Oops, this page cannot be found...</h2>
+
+    <!-- Left column -->
+    <div class='col-md-6'>
+
+        <!-- first panel -->
+        <div class='panel panel-default'>
+            <div class='panel panel-heading'>
+                <h3 class='panel-title'>Book Library</h3>
+            </div>
+            <div class='panel-body'>
+               <a href="books/">
+                <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 30px; height: 80px' src="{% static '/reading.png'%}">
+                </div>
+                <h3>Go to Books section</h3>
+                </a>
+                </div>
+            <br>
+            </div>
+        </div>
+
+
+
+<!-- Right column -->
+<div class='col-md-6'>
+
+    <!-- first panel -->
+    <div class='panel panel-default'>
+        <div class='panel panel-heading'>
+            <h3 class='panel-title'>Film Overview</h3>
+        </div>
+        <div class='panel-body'>
+           <a href="films/">
+            <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 30px; height: 80px' src="{% static '../../filmcamera.png'%}"></div>
+            <h3>Go to Films section</h3>
+        </a>
+    </div>
+    <br>
+</div>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
