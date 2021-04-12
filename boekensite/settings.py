@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 
 # set passoword to secure complete website
-LOCKDOWN_PASSWORDS = ('letmein', 'beta')
+#LOCKDOWN_PASSWORDS = ('letmein', 'beta')
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lockdown',
+ #   'lockdown',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'lockdown.middleware.LockdownMiddleware',
+  #  'lockdown.middleware.LockdownMiddleware',
 ]
 
 ROOT_URLCONF = 'boekensite.urls'
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'boekensite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
