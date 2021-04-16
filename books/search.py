@@ -1,12 +1,27 @@
 # -*- coding: utf-8 -*-
 # @Author: TomLotze
 # @Date:   2020-08-11 19:01
-# @Last Modified by:   TomLotze
-# @Last Modified time: 2020-08-14 00:25
+# @Last Modified by:   Tom Lotze
+# @Last Modified time: 2021-04-16 12:28
 
 from bs4 import BeautifulSoup as BS
 import requests
 import json
+
+
+
+def google_books_api_request(query, topk=5):
+    response = requests.get(self.__BASEURL+path, params=params)
+
+    # if succesfull, convert to dictionary
+    if response.status_code == 200:
+        content =  json.loads(response.content)
+    else:
+        return 1
+
+    # get the topk results from the json
+    topk = min(topk, int(content['totalItems']))
+
 
 def scrape(url):
     headers = {

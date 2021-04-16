@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .scrape import scrape
+from .search import scrape, google_books_api_request
 from .models import Book, Author
 from django.utils import timezone
 from django.db.models import Q
@@ -47,6 +47,17 @@ def index(request):
 
     return render(request, 'books/index.html', context = context)
 
+
+def list(query, topk=3):
+    """
+    This function should return multiple books for the query, and show them
+    on the index page, below the search block. The user should be able to click the books to add them to the library: the information is already retrieved. To retrieve the results, the google_books_api_request function is used
+    """
+    pass
+
+    results = google_books_api_request(query, topk=topk)
+
+    # the results should be a dictionary with the number of results as a key, and for each result a key with all the information.
 
 
 def search(request):
