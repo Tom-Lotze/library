@@ -2,7 +2,7 @@
 # @Author: TomLotze
 # @Date:   2020-08-11 19:01
 # @Last Modified by:   Tom Lotze
-# @Last Modified time: 2021-04-16 12:28
+# @Last Modified time: 2021-04-16 13:02
 
 from bs4 import BeautifulSoup as BS
 import requests
@@ -10,8 +10,8 @@ import json
 
 
 
-def google_books_api_request(query, topk=5):
-    response = requests.get(self.__BASEURL+path, params=params)
+def google_books_api_request(query, topk=5, base_url="https://www.googleapis.com/books/v1/volumes?q="):
+    response = requests.get(base_url+query)
 
     # if succesfull, convert to dictionary
     if response.status_code == 200:
@@ -21,6 +21,12 @@ def google_books_api_request(query, topk=5):
 
     # get the topk results from the json
     topk = min(topk, int(content['totalItems']))
+    out = {}
+    out["n_results"] = topk
+    for i in range(1, topk+1):
+        out[i] = content["items"][i]
+
+    return out
 
 
 def scrape(url):
