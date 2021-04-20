@@ -15,7 +15,7 @@
         {% for b in books %}
         <a class='list-group-item clearfix' href="/books/{{b.id}}">
             <h4>
-                <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px">
+                <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right:12px;width:50px;height:80px' src={{b.image_url}} >
                 </div>
                 {% if b.favorite %}
                 <span class="fa fa-star checked"></span>
@@ -45,10 +45,12 @@
         </div>
         {% endif %}
 
-        <br>
-        <a href="{% url 'books:index' %}" class="btn btn-default pull-right">
-            Home
-        </a>
+    <br>
+    <div>
+    <a href="{% url 'books:index' %}" class="btn btn-default pull-right">
+        Home
+    </a>
+    </div>
 
 </div>
 

@@ -57,7 +57,7 @@ def get_index_context():
     return context
 
 
-def search(request, topk=3):
+def search(request, topk=5):
     """
     This function should return multiple books for the query, and show them
     on the index page, below the search block. The user should be able to click the books to add them to the library: the information is already retrieved. To retrieve the results, the google_books_api_request function is used

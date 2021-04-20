@@ -26,10 +26,10 @@
                     {% for b in searchResults%}
                     <div class='list-group-item clearfix'>
                         {% if b.image_url %}
-                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px" min-width="50px">
+                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px;width:50px;height:80px' src={{b.image_url}}>
                         </div>
                         {% else %}
-                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/BLANK_ICON.png/120px-BLANK_ICON.png" width="50px"></div>
+                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px;width:50px;height:80px' src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/BLANK_ICON.png/120px-BLANK_ICON.png"></div>
                         {% endif %}
                         {{ b.title }} - {{b.authors}}
                         <br>
@@ -38,8 +38,8 @@
                         <div class='pull-right'>
                         <form action="{% url 'books:add' %}" method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="info" value="{{ r }}">
-                            <button class="btn btn-default small pull-right" type="submit" value="{{ r }}">Add to Library
+                            <input type="hidden" name="info" value="{{ b }}">
+                            <button class="btn btn-default small pull-right" type="submit" value="{{ b }}">Add to Library
                             </button>
                         </form>
                         </div>
@@ -137,7 +137,7 @@
             <div class='panel-body'>
                 {% for b in currBooks %}
                 <a class='list-group-item clearfix' href={{b.id}}>
-                    <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px">
+                    <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: "12px";width:50px;height:80px' src={{b.image_url}}>
                     </div>
                     {% if b.favorite %}
                     <span class="fa fa-star checked"></span>
