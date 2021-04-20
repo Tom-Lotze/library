@@ -19,31 +19,75 @@
                     <input type="hidden" name="type" value='search'>
                 </form>
                 {% if searchResults == "1" %}
+                No results could be found, please broaden your search
+                {% elif searchResults %}
+                <h4>Results ({{ searchResults|length }} found)</h4><br>
+                <div class="list-group">
+                    {% for b in searchResults%}
+                    <div class='list-group-item clearfix'>
+                        {% if b.image_url %}
+                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src={{b.image_url}} width="50px" min-width="50px">
+                        </div>
+                        {% else %}
+                        <div class='pull-left'><img class='img-rounded img-responsive' style='margin-right: 12px' src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/BLANK_ICON.png/120px-BLANK_ICON.png" width="50px"></div>
+                        {% endif %}
+                        {{ b.title }} - {{b.authors}}
+                        <br>
+                        <small>{{ b.language }} | {{ b.nrPages }} pages | published {{ b.publication_date }}.
+                        </small>
+                        <div class='pull-right'>
+                        <form action="{% url 'books:add' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="info" value="{{ r }}">
+                            <button class="btn btn-default small pull-right" type="submit" value="{{ r }}">Add to Library
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+<!--                 {% if searchResults == "1" %}
                     No results could be found, please broaden your search
                 {% elif searchResults %}
                     <h4>Results ({{ searchResults|length }} found)</h4><br>
-                    <ul>
+                    <h5>Click to add to library</h5>
+                    <ol>
                     {% for r in searchResults %}
                         <li>
-                            {{r.author|first}} - {{r.title}}
-                            <!-- Here a form shoud be placed, that calls an add function in views, and passes the "r" variable with all the information to create the record in teh database -->
-                            <button class="btn btn-default pull-right" type="submit">Add to Library</button> <br><br>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
 
+                        {% if r.image_url %}
+                            <div class='pull-right'><img class='img-rounded img-responsive' style='margin-left: 12px' src={{r.image_url}} width="40px">
+                        {% endif %}
+
+                        {{r.title}} <br> {{r.authors}}
+                        <form action="{% url 'books:add' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="info" value="{{ r }}">
+                            <button class="btn btn-default small pull-right" type="submit" value="{{ r }}">Add to Library
+                            </button>
+                        </form>
+
+                    </li>
+                    {% endfor %}
+                    </ol>
+                {% endif %} -->
+            </div>
         </div>
+
+
+
+
+
 
 
 
         <div class='panel panel-default'>
             <div class='panel panel-heading'>
-                <h3 class='panel-title'>Add Books to Directly (Bol.com link)</h3>
+                <h3 class='panel-title'>Add books directly (Bol.com link)</h3>
             </div>
             <div class='panel-body'>
-                <form action='search' method="get">
+                <form action='add_bol' method="get">
                     <input class="form-control" type="search" name="url" placeholder="Bol.com URL of book to be added" autofocus="", autocomplete="on">
                     <br>
                     <button class="btn btn-default pull-right" type="submit">Add</button>

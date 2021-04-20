@@ -3,6 +3,8 @@ from .search import scrape, google_books_api_request, api2book
 from .models import Book, Author
 from django.utils import timezone
 from django.db.models import Q
+import json
+import re
 
 # Create your views here.
 
@@ -72,18 +74,35 @@ def search(request, topk=3):
         context['searchResults'] = "1"
         return render(request, 'books/index.html', context=context)
 
-    for i in range(1, results['n_results']+1):
+    for i in range(results['n_results']):
         context['searchResults'].append(api2book(results[i]))
+
+
 
     return render(request, 'books/index.html', context=context)
 
 
-def add(request):
+def add_bol(request):
     # scrape the bol.com page
     bol_url = request.GET['url']
 
     info = scrape(bol_url)
 
+    return savebook2database(request, info, bol_url)
+
+
+def add(request):
+    info = request.POST['info']
+
+    p = re.compile('(?<!\\\\)\'')
+    info = p.sub('\"', info)
+
+    info = json.loads(info)
+
+    return savebook2database(request, info)
+
+
+def savebook2database(request, info, bolurl=None):
     # url failed
     if info == 1:
         context = {"failure": True, 'bolurl': bol_url}
@@ -100,6 +119,7 @@ def add(request):
 
 
     return render(request, 'books/search.html', context=info)
+
 
 
 def detail(request, book_id):

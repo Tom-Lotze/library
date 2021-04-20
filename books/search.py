@@ -2,16 +2,18 @@
 # @Author: TomLotze
 # @Date:   2020-08-11 19:01
 # @Last Modified by:   Tom Lotze
-# @Last Modified time: 2021-04-20 16:35
+# @Last Modified time: 2021-04-20 21:03
 
 from bs4 import BeautifulSoup as BS
 import requests
 import json
+from django.utils.html import escape
 
 
 
 def google_books_api_request(query, topk=5, base_url="https://www.googleapis.com/books/v1/volumes?q="):
-    response = requests.get(base_url+query)
+
+    response = requests.get(base_url+query+f"&maxResults={topk}"+"&printType=books")
 
     # if succesfull, convert to dictionary
     if response.status_code == 200:
@@ -26,7 +28,7 @@ def google_books_api_request(query, topk=5, base_url="https://www.googleapis.com
 
     out = {}
     out["n_results"] = topk
-    for i in range(1, topk+1):
+    for i in range(topk):
         out[i] = content["items"][i]
 
     return out
@@ -34,9 +36,32 @@ def google_books_api_request(query, topk=5, base_url="https://www.googleapis.com
 
 def api2book(items_dict):
     info = dict()
+    volumeInfo = items_dict['volumeInfo']
 
-    info['title'] = items_dict['volumeInfo']['title']
-    info['author'] = items_dict['volumeInfo']['authors']
+    info["title"] = volumeInfo["title"]
+
+    info["link"] = volumeInfo['canonicalVolumeLink']
+    try:
+        info["authors"] = volumeInfo["authors"][0]
+    except:
+        info["authors"] = "Unknown author"
+
+    try:
+        info["description"] = (volumeInfo["description"]).replace("\'", "")
+    except:
+        info["description"] = ""
+    info["isbn"] = volumeInfo["industryIdentifiers"][0]["identifier"]
+    info["language"] = volumeInfo["language"].upper()
+    info["publication_date"] = volumeInfo["publishedDate"]
+    try:
+        info["nrPages"] = volumeInfo["pageCount"]
+    except:
+        info["nrPages"] = 0
+
+    try:
+        info["image_url"] = volumeInfo["imageLinks"]["thumbnail"]
+    except:
+        info["image_url"] = ""
 
     return info
 
@@ -45,7 +70,7 @@ def api2book(items_dict):
 
 def scrape(url):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',
+        "User-Agent": 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate',
