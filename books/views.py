@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .search import scrape, google_books_api_request
+from .search import scrape, google_books_api_request, api2book
 from .models import Book, Author
 from django.utils import timezone
 from django.db.models import Q
@@ -8,6 +8,11 @@ from django.db.models import Q
 
 def index(request):
 
+    context = get_index_context()
+
+    return render(request, 'books/index.html', context = context)
+
+def get_index_context():
     all_books = Book.objects.all()
 
     context = {"all_books" : all_books}
@@ -45,7 +50,9 @@ def index(request):
 
     context['nrReadThisYear'] = len(read_this_year)
 
-    return render(request, 'books/index.html', context = context)
+    context['searchResults'] = []
+
+    return context
 
 
 def search(request, topk=3):
@@ -53,12 +60,22 @@ def search(request, topk=3):
     This function should return multiple books for the query, and show them
     on the index page, below the search block. The user should be able to click the books to add them to the library: the information is already retrieved. To retrieve the results, the google_books_api_request function is used
     """
-    pass
-
     query = request.GET['query']
     results = google_books_api_request(query, topk=topk)
 
     # the results should be a dictionary with the number of results as a key, and for each result a key with all the information.
+
+    context=get_index_context()
+
+    # if no results are retrieved, set search results to -1
+    if results == 1:
+        context['searchResults'] = "1"
+        return render(request, 'books/index.html', context=context)
+
+    for i in range(1, results['n_results']+1):
+        context['searchResults'].append(api2book(results[i]))
+
+    return render(request, 'books/index.html', context=context)
 
 
 def add(request):

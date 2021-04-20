@@ -2,7 +2,7 @@
 # @Author: TomLotze
 # @Date:   2020-08-11 19:01
 # @Last Modified by:   Tom Lotze
-# @Last Modified time: 2021-04-16 13:02
+# @Last Modified time: 2021-04-20 16:35
 
 from bs4 import BeautifulSoup as BS
 import requests
@@ -21,12 +21,26 @@ def google_books_api_request(query, topk=5, base_url="https://www.googleapis.com
 
     # get the topk results from the json
     topk = min(topk, int(content['totalItems']))
+    if topk == 0:
+        return 1
+
     out = {}
     out["n_results"] = topk
     for i in range(1, topk+1):
         out[i] = content["items"][i]
 
     return out
+
+
+def api2book(items_dict):
+    info = dict()
+
+    info['title'] = items_dict['volumeInfo']['title']
+    info['author'] = items_dict['volumeInfo']['authors']
+
+    return info
+
+
 
 
 def scrape(url):
